@@ -1,0 +1,9 @@
+# output directories
+bin/
+obj/
+
+# vs setting files
+.vs/
+
+# Folder config file
+Desktop.ini
