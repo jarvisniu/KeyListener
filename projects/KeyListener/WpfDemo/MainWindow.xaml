@@ -7,8 +7,13 @@
         mc:Ignorable="d"
         Title="KeyListene WPF Demo" Height="350" Width="525">
     <Grid>
-        <Label x:Name="label" Content="try: F1, Ctrl+R, F5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="155,122,0,0" VerticalAlignment="Top" FontSize="21.333" Width="224.14"/>
+        <Label x:Name="label" Content="try: F1, Ctrl+R, F5" HorizontalAlignment="Left" Margin="15,39,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="15,69,0,0" VerticalAlignment="Top" FontSize="21.333" Width="224"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,204,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+        <Button x:Name="button" Content="Start Setting" HorizontalAlignment="Left" Margin="209,204,0,0" VerticalAlignment="Top" Width="105" Click="button_Click" Height="23"/>
+        <Label x:Name="labelSettingState" Content="Not setting" HorizontalAlignment="Left" Margin="10,234,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2" Content="Set shortcut:" HorizontalAlignment="Left" Margin="10,174,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label3" Content="Bind shortcut:" HorizontalAlignment="Left" Margin="15,10,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

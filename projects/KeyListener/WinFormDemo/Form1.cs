@@ -20,11 +20,15 @@ namespace WinFormDemo
             InitializeComponent();
             keyListener.onPress("F1", onPressHelp);           // a single key
             keyListener.onPress("Ctrl+R F5", onPressRefresh); // combined key & multiple combination
+
+            keyListener.onSettingChange = onSettingChange;
+            keyListener.onSettingConfirm = onSettingConfirm;
         }
 
         private void onPressHelp()
         {
-            this.Invoke(new Action( delegate {
+            this.Invoke(new Action(delegate
+            {
                 label2.Text = "help keys pressed.";
             }));
         }
@@ -34,6 +38,29 @@ namespace WinFormDemo
             {
                 label2.Text = "refresh keys pressed.";
             }));
+        }
+
+        private void onSettingChange(string keyString)
+        {
+            this.Invoke(new Action(delegate
+            {
+                textBox1.Text = keyString;
+                labelSettingState.Text = "setting...";
+            }));
+        }
+
+        private void onSettingConfirm(string keyString)
+        {
+            this.Invoke(new Action(delegate
+            {
+                textBox1.Text = keyString;
+                labelSettingState.Text = "set complete";
+            }));
+        }
+
+        private void buttonStartSetting_Click(object sender, EventArgs e)
+        {
+            keyListener.startSetting();
         }
         // end of class
     }

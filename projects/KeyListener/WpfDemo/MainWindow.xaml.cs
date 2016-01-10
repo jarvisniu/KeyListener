@@ -23,6 +23,8 @@ namespace WpfDemo
         public MainWindow()
         {
             InitializeComponent();
+            keyListener.onSettingChange = onSettingChange;
+            keyListener.onSettingConfirm = onSettingConfirm;
             keyListener.onPress("F1", onHelpRefresh);           // a single key
             keyListener.onPress("Ctrl+R F5", onPressRefresh);   // combined key & multiple combination
         }
@@ -33,13 +35,36 @@ namespace WpfDemo
                 label1.Content = "help keys pressed.";
             });
         }
-        
+
         private void onPressRefresh()
         {
             this.Dispatcher.Invoke(delegate
             {
                 label1.Content = "refresh keys pressed.";
             });
+        }
+        
+        private void onSettingChange(string keyString)
+        {
+            this.Dispatcher.Invoke(delegate
+            {
+                labelSettingState.Content = "Setting...";
+                textBox.Text = keyString;
+                // Console.WriteLine("onSettingChange: " + count);
+            });
+        }
+        private void onSettingConfirm(string keyString)
+        {
+            this.Dispatcher.Invoke(delegate
+            {
+                labelSettingState.Content = "Set completed";
+                textBox.Text = keyString;
+            });
+        }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            keyListener.startSetting();
         }
         // end of class
     }

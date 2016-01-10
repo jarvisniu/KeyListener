@@ -83,15 +83,23 @@ namespace com.jarvisniu.utils
 
         #region variables
 
-        private List<string> watchingCombinedKeys;                    // 已添加的所有组合键
-        private List<string> watchingSingleKeys;                        // 已添加的所有单键
-        private Dictionary<string, bool> currentSingleKeyStates;        // 这次检测时单键的状态
-        private Dictionary<string, bool> lastSingleKeyStates;           // 上次检测时单键的状态
-        private Dictionary<string, List<string>> singleMapToCombination;   // 从单键检索包含该单键的组合键
-        private Dictionary<string, Action> pressActions;                // 各快捷键组合在按下时要执行的回调函数
-        private Dictionary<string, Action> releaseActions;              // 各快捷键组合在放开时要执行的回调函数
+        private List<string> watchingCombinedKeys;                          // 已添加的所有组合键
+        private List<string> watchingSingleKeys;                            // 已添加的所有单键
+        private Dictionary<string, bool> currentSingleKeyStates;            // 这次检测时单键的状态
+        private Dictionary<string, bool> lastSingleKeyStates;               // 上次检测时单键的状态
+        private Dictionary<string, List<string>> singleMapToCombination;    // 从单键检索包含该单键的组合键
+        private Dictionary<string, Action> pressActions;                    // 各快捷键组合在按下时要执行的回调函数
+        private Dictionary<string, Action> releaseActions;                  // 各快捷键组合在放开时要执行的回调函数
 
         private Timer timer = new Timer(20);
+
+        // 快捷键设置
+        public delegate void StringAction(string keyString);
+        public StringAction onSettingChange;
+        public StringAction onSettingConfirm;
+        private bool isSetting = false;
+        private List<string> settingKeysAll = new List<string>();       // 在本轮设置阶段按下过的所有键，包括现在和曾经
+        private List<string> settingKeysNow = new List<string>();       // 在本轮设置阶段目前正按下的键
 
         #endregion
 
@@ -136,6 +144,12 @@ namespace com.jarvisniu.utils
                 releaseActions[key] = cb;
             }
             return this;
+        }
+
+        public void startSetting()
+        {
+            isSetting = true;
+            if(onSettingChange != null)onSettingChange.Invoke("");
         }
 
         #endregion
@@ -188,11 +202,25 @@ namespace com.jarvisniu.utils
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            if (isSetting)
+            {
+                detectSetting();
+            }
+            else
+            {
+                detectBinding();
+            }
+        }
+
+        private void detectBinding()
+        {
+            // 设置被监测单键的状态
             foreach (string key in watchingSingleKeys)
             {
                 currentSingleKeyStates[key] = detectKeyDown(key);
             }
 
+            // 根据检测单键的变更触发绑定的热键
             foreach (string key in watchingSingleKeys)
             {
                 if (lastSingleKeyStates[key] != currentSingleKeyStates[key])
@@ -224,10 +252,69 @@ namespace com.jarvisniu.utils
                 }
             }
 
+            // 记录上次按键状态
             foreach (string key in watchingSingleKeys)
             {
                 lastSingleKeyStates[key] = currentSingleKeyStates[key];
             }
+        }
+
+        private void detectSetting()
+        {
+            foreach (string key in keyMap.Keys)
+            {
+                // 检测所有键的状态
+                currentSingleKeyStates[key] = detectKeyDown(key);
+                // 与上次记录做比较
+                if (lastSingleKeyStates.ContainsKey(key) && lastSingleKeyStates[key] != currentSingleKeyStates[key])
+                {
+                    bool isDownNow = currentSingleKeyStates[key];
+                    // 如果有新键按下，则加入设置键列表，并触发settingChange
+                    if (isDownNow)
+                    {
+                        if (!settingKeysAll.Contains(key))
+                        {
+                            settingKeysAll.Add(key);
+                            if (onSettingChange != null)
+                                onSettingChange.Invoke(combineKeyString(settingKeysAll));
+                        }
+                        if (!settingKeysNow.Contains(key))
+                        {
+                            settingKeysNow.Add(key);
+                        }
+                    }
+                    // 如果所有键都松开，而设置键列表不为空，则触发settingConfirm
+                    else
+                    {
+                        if (settingKeysNow.Contains(key))
+                        {
+                            settingKeysNow.Remove(key);
+                        }
+                        if (settingKeysNow.Count == 0)
+                        {
+                            isSetting = false;
+                            if(onSettingConfirm!=null)
+                                onSettingConfirm.Invoke(combineKeyString(settingKeysAll));
+                            settingKeysAll.Clear();
+                            settingKeysNow.Clear();
+                        }
+                    }
+                }
+                // 记录上次状态
+                lastSingleKeyStates[key] = currentSingleKeyStates[key];
+            }
+        }
+
+        private string combineKeyString(List<string> keys)
+        {
+            if (keys.Count == 0) return "";
+
+            string keyString = keys[0];
+            for (int i = 1; i < keys.Count; i++)
+            {
+                keyString += " + " + keys[i];
+            }
+            return keyString;
         }
 
         #endregion
