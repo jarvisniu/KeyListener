@@ -1,27 +1,25 @@
 KeyListener
 ===========
 
-[【中文 Chinese】](https://github.com/jarvisniu/KeyListener/blob/master/README-zh-CN.md)
+一个后台键盘监听器 .NET/C#
 
-a background keyboard listener for .NET/C#
+你可以:
 
-You can:
-
-1. bring up your program window when it has no focus
-2. set the shortcut keys
+1. 当程序窗口没有焦点的时候，调出它
+2. 设置快捷键
 
 
-## Usage
+## 使用
 
-1. Import the dll or add the source code to your project.
-2. Add namespace using
-3. Create an KeyListener instance
-4. Create an response function
-5. Bind the Keys to the response function
+1. 导入DLL或者添加源文件到项目中
+2. 添加命名空间
+3. 创建一个KeyListener的实例
+4. 创建一个响应函数
+5. 绑定快捷键与响应函数
 
-## Demo Code
+## 示例代码
 
-shortcut binding:
+快捷键绑定:
 
 ```C#
 
@@ -54,7 +52,7 @@ namespace WpfDemo
 
 ```
 
-shortcut setting:
+快捷键设置:
 
 ``` C#
 
@@ -95,20 +93,20 @@ namespace WpfDemo
 
 ## API
 
-There are only two pair of members:
+只有两对成员:
 
 - `onSettingChange: void Function(string keyString)`
 - `onSettingConfirm: void Function(string keyString)`
 - `onPress(string keys, Action response)`
 - `onRelease(string keys, Action response)`
 
-The parameter `keys` is the keyboard shortcuts, not case sensitive. Here are some examples:
+参数 `keys` 是键盘快捷键，不区分大小写。这是一些例子：
 
-- `"F1"`  - a single key
-- `"Ctrl+C"` - a combined key
-- `"Ctrl+R F5"` - multiple shortcuts
+- `"F1"`  - 单个的快捷键
+- `"Ctrl+C"` - 组合的快捷键
+- `"Ctrl+R F5"` - 多个快捷键
 
-## Key List
+## 按键列表
 
 - `Backspace`
 - `Tab`
@@ -120,16 +118,16 @@ The parameter `keys` is the keyboard shortcuts, not case sensitive. Here are som
 - `A-Z`
 - `F1`-`F12`
 
-## History
+## 更新历史
 
 v0.1.0
 
-- support background shortcuts
+- 支持后台快捷键
 
 v0.2.0
 
-- support shorcut setting
+- 支持快捷键设置
 
-## Plan
+## 计划
 
-- supplement the keys
+- 扩充快捷键
